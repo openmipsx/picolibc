@@ -1804,6 +1804,14 @@ endif
 # if we're using our own OS lib, then set all of the link
 # parameters. Otherwise, we're using the native C library for OS
 # functions so we don't need this.
+#
+# A cross file can set the 'test_runtime_link_args' property for a
+# toolchain whose compiler driver supplies the start-up code, linker
+# script and run-time libraries itself. Tests then link with those
+# arguments instead of '-nostdlib -T picolibc.ld', and picocrt is not
+# needed to run them.
+
+test_runtime_link_args = meson.get_external_property('test_runtime_link_args', [])
 
 if oslib_test != ''
   foreach params : [default_target] + targets
@@ -1861,10 +1869,16 @@ if oslib_test != ''
       endif
     endif
 
+    if test_runtime_link_args != []
+      picolibc_ld_args = test_runtime_link_args
+    else
+      picolibc_ld_args = ['-nostdlib', '-T', picolibc_ld_string]
+    endif
+
     set_variable(test_link_args_variable,
                  additional_libs_list +
 		 test_link_args_base +
-                 ['-nostdlib', '-T', picolibc_ld_string])
+                 picolibc_ld_args)
 
     set_variable(test_linker_files_variable, [picolibc_ld_value])
 
@@ -1899,7 +1913,7 @@ if oslib_test != ''
                  ['-nostdlib', '-T', picolibc_noflash_ld_string])
     set_variable(test_link_depends_noflash_variable, [picolibc_noflash_ld_value])
   endforeach
-  test_noflash = linkerscript_test_variant == '' and crt0_test_variant != 'semihost_smrnmi' and crt0_test_variant != 'semihost_cfi'
+  test_noflash = linkerscript_test_variant == '' and crt0_test_variant != 'semihost_smrnmi' and crt0_test_variant != 'semihost_cfi' and test_runtime_link_args == []
 else
   test_link_args = test_link_args_base
   test_link_depends = []
