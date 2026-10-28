@@ -354,6 +354,10 @@ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 #define __IEEE_BIG_ENDIAN
 #endif
 
+#ifdef __mipsx__
+#define __IEEE_BIG_ENDIAN
+#endif
+
 #ifdef __m88k__
 #define __IEEE_BIG_ENDIAN
 #endif

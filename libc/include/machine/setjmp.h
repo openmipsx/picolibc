@@ -150,6 +150,11 @@ _BEGIN_STD_C
 #endif
 #endif
 
+#ifdef __mipsx__
+/* r16-r22, r25-r27, sp, fp and ra (mipsx-sdk docs/abi.md §13.7) */
+#define _JBLEN 13
+#endif
+
 #ifdef __m88000__
 #define _JBLEN 21
 #endif
