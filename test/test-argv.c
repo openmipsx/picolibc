@@ -50,7 +50,7 @@ static const char *expect_args[] = { "hello", "world" };
 int
 main(int argc, char **argv)
 {
-#if defined(__HEXAGON_ARCH__)
+#if defined(__HEXAGON_ARCH__) || defined(__mipsx__)
     unsigned i;
     int      errors = 0;
 
@@ -78,7 +78,7 @@ main(int argc, char **argv)
 
     return errors;
 #else
-    printf("Hexagon-only argv test; skipping\n");
+    printf("argv test for Hexagon and MIPS-X only; skipping\n");
     (void)argc;
     (void)argv;
     (void)expect_prog;
